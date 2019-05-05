@@ -1,0 +1,44 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Todo App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">Statictics <span class="sr-only">(current)</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link">Logout</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Arama" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Ara</button>{% endcomment %}
+            <div class="dropdown pr-5">
+                <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown" aria-expanded="false">
+                    <span class="avatar" style="background-image: url({% static 'img/profile.svg' %})"></span>
+                    <span class="ml-2 d-none d-lg-block">
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" x-placement="bottom-end"
+                     style="position: absolute; transform: translate3d(-56px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <a class="dropdown-item" href="#">
+                        <i class="dropdown-icon fe fe-user"></i> Profile
+                    </a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="dropdown-icon fe fe-settings"></i> Log out
+                    </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</nav>

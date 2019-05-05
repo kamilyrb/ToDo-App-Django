@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    {% block css %}
+        <link rel="stylesheet" href="{% static 'plugins/bootstrap/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+        <link rel="stylesheet" href="{% static 'css/vendors.bundle.min.css' %}">
+{#        <link rel="stylesheet" href="{% static 'css/style.bundle.min.css' %}">#}
+        <link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
+
+    {% endblock %}
+</head>
+<body>
+{% include 'base/messages.html' %}
+{% include "base/header.html" %}
+<div class="mr-t-10"></div>
+{% block content %}
+
+{% endblock %}
+
+
+
+{% block plugin %}
+        <script type="text/javascript" src="{% static "plugins/jquery/jquery.min.js" %}"></script>
+{#    <script type="text/javascript" src="{% static "js/vendors.bundle.js" %}"></script>#}
+    <script type="text/javascript" src="{% static "plugins/bootstrap/popper.min.js" %}"></script>
+{#    <script type="text/javascript" src="{% static "plugins/sweetalert/sweetalert.js" %}"></script>#}
+    <script type="text/javascript" src="{% static "plugins/bootstrap/bootstrap.min.js" %}"></script>
+{#    <script type="text/javascript" src="{% static "js/app.js" %}"></script>#}
+{% endblock %}
+{% block script %}{% endblock %}
+{% block script-raw %}{% endblock %}
+</body>
+</html>
