@@ -1,0 +1,105 @@
+{% extends 'base/layout.html' %}{% load static %}
+
+
+{% block content %}
+
+    <div class="m-portlet m-portlet--mobile">
+        <div class="m-portlet__body">
+            {% include 'datatable.html' %}
+        </div>
+    </div>{% for form in forms %}{% if form.path %}
+    {% include form.path %}{% endif %}{% endfor %}
+{% endblock %}
+
+{% block script-raw %}
+    {{ block.super }}
+    <script type="text/javascript">
+        //<![CDATA[
+        App.loadFiles([
+            '{% static 'plugins/datatables/datatables.bundle.css' %}',
+            '{% static 'plugins/datatables/datatables.bundle.js' %}',
+            '{% static 'js/datatable.js' %}',
+            {% for file in js %},
+                '{% static file %}'{% endfor %}
+        ], function () {
+            // List
+            var grid = new Datatable();
+            grid.init({
+                src: $('#{{ table.id|default:'list' }}'),
+                dataTable: {
+                    'ajax': {
+                        'type': 'get',
+                        'url': '{{ table.url }}'
+                    }
+                },
+                onDataLoad: function (grid) {
+                    var button = $('a[href="#delete"]');
+                    $(button).click(function (e) {
+                        e.preventDefault();
+                        var id = parseFloat($(this).attr('data-id')),
+                            url = window.location.origin + window.location.pathname + "delete/" + id;
+                        console.log(url);
+                        var message = 'Kayıt tamamen silinecektir!';
+                        if (typeof $(button).data('message') !== 'undefined') {
+                            message = $(button).data("message");
+                        }
+                        App.confirm(message, function () {
+                            window.setTimeout(function () {
+                                $.ajax({
+                                    'type': 'delete',
+                                    'url': url
+                                }).done(function (result) {
+                                    if (result.success) {
+                                        App.notify(result.message);
+                                        App.reloadDataTables();
+                                    } else {
+                                        App.alert(result.message);
+                                    }
+                                }).fail(function (jqXHR, textStatus) {
+                                    App.alert('Sunucu hatası oluştu, sayfayı yenileyin!');
+                                });
+                            }, 500);
+                        });
+                    });
+                    {#    for confirm dialog#}
+                    var confirmButton = $('a[data-event="confirm"]');
+                    $(confirmButton).click(function (e) {
+                        e.preventDefault();
+                        var url =$(this).attr('data-confirmurl');
+                        App.confirm(($(this).attr('data-message')), function () {
+                            window.setTimeout(function () {
+                                $.ajax({
+                                    'type': 'post',
+                                    'url': url
+                                }).done(function (result) {
+                                    if (result.success) {
+                                        App.notify(result.message);
+                                        App.reloadDataTables();
+                                    } else {
+                                        App.alert(result.message);
+                                    }
+                                }).fail(function (jqXHR, textStatus) {
+                                    App.alert('Sunucu hatası oluştu, sayfayı yenileyin!');
+                                });
+                            }, 500);
+                        });
+                    });
+                }
+            });
+            App.datatable['{{ table.id|default:'list' }}'] = grid;
+            {% for form in forms %}{% if form.id %}
+            Form.save($('#{{ form.id }}'), function () {
+                this.closest('.modal').modal('hide');
+                grid.getDataTable().ajax.reload();
+            });
+            {% endif %}{% endfor %}
+            {% if onjsload %}
+                window.setTimeout(function () {
+                    {% for jsload in onjsload %}
+                        eval({{ jsload }});
+                    {% endfor %}
+                }, 500);
+            {% endif %}
+        });
+        //]]>
+    </script>{% endblock %}

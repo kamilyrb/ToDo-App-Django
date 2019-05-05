@@ -1,18 +1,65 @@
 from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from main.forms.form import LoginForm
-from main.models import USession
+from main.models import USession, Todo
 from django.contrib.auth import authenticate, login as sys_login, logout as sys_logout, user_login_failed
+
+from utils.datatable import DataTable
 
 
 @login_required
 def dashboard(request):
     try:
-        return render(request, 'pages/dashboard.html', {})
+        if request.is_ajax():
+            data = DataTable.result_list()
+            action_list = []
+
+            actions = DataTable.datatable_actions(action_list)
+
+            start = int(request.GET.get('start', 0))
+            length = start + int(request.GET.get('length', 10))
+            order = DataTable.datatable_order([
+                'text',
+            ], (int(request.GET.get('order[0][column]', 2)) - 2), request.GET.get('order[0][dir]', 'desc'))
+
+            items = Todo.objects.all()
+            print(len(items))
+            total = items.count()
+            items = DataTable.filtering(request, items, [
+                {'text': 'icontains'},
+            ])
+
+            filtered = items.count()
+            items = items.order_by(order)[start:length]
+
+            rows = []
+            for item in items:
+                rows.append({
+                    'id': item.id,
+                    'text': item.text,
+                    'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
+                })
+            data = DataTable.result_list(True, start, total, filtered, rows)
+
+            return JsonResponse(data)
+
+        return render(request, 'base/list.html', {
+            'table': DataTable.datatable([
+                {
+                    'id': 'text',
+                    'title': 'Todo Text',
+                    'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                },
+            ], url=''),
+            'actions': [],
+
+        })
     except Exception as ex:
         print(ex)
+        pass
 
 
 def login(request):

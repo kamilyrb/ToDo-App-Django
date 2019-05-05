@@ -1,0 +1,39 @@
+<div class="my_card">
+    <table id="{{ table.id|default:'list' }}"
+           class="table table-bordered table-striped table-sm table-hover table-checkable "
+           data-url="
+
+                   {{ table.url|default_if_none:request.get_full_path }}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+           data-sort-col="{{ table.sorting.column|default:2 }}" data-sort-dir="{{ table.sorting.dir|default:'desc' }}"
+           data-export-all="{{ table.export_all|default_if_none:'false' }}"
+           data-hide-columns="{{ table.hide|default_if_none:5 }}" data-rowcallback="{{ table.rowcallback|default:'' }}"
+           data-initcomplete="{{ table.initcomplete|default_if_none:'' }}"
+           data-drawcallback="{{ table.drawcallback|default_if_none:'' }}">
+        <thead>
+        <tr class="heading">
+            <th data-id="_responsive" class="control no-export" {% if table.filters %} rowspan="2"{% endif %}></th>
+            {% if table.numbering %}
+                <th data-id="_numbering" class="text-center"{% if table.filters %} rowspan="2"
+                    data-numbering="true"{% endif %}>#
+                </th>{% endif %}{% for column in table.columns %}
+            <th data-id="{{ column.id }}" class="{{ column.class }}"
+                data-sortable="{% if column.sortable == False %}false{% else %}true{% endif %}"
+                {% if column.hide %}data-visible="true"{% endif %}>{{ column.title|safe }}</th>{% endfor %}
+            {% if table.filters or actions %}
+                <th data-id="actions" class="text-center text-nowrap not-export-col no-export">Action</th>{% endif %}
+        </tr>{% if table.filters %}
+            <tr class="filter no-export">{% for column in table.columns %}
+                <th data-id="{{ column.id }}" class="{{ column.class }}">
+                    {% if column.filter %}{{ column.filter|safe }}{% endif %}</th>{% endfor %}
+                <th class="text-center text-nowrap">
+                    <button class="btn btn-brand m-btn btn-sm m-btn--icon filter-submit" title="Filter"><i
+                            class="fas fa-filter"></i></button>
+                    <button class="btn btn-secondary m-btn btn-sm m-btn--icon filter-cancel" title="Remove Filter"><i
+                            class="fas fa-times"></i></button>
+                </th>
+            </tr>{% endif %}
+        </thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
