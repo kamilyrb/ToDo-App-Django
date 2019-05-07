@@ -28,7 +28,7 @@ class USession(models.Model):
     user_id = models.IntegerField(
         verbose_name='User ID'
     )
-
+    is_superuser = models.BooleanField(blank=True, default=True, help_text=_('User Is Admin'))
     def __str__(self):
         return self.full_name
 

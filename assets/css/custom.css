@@ -157,11 +157,12 @@ a:hover, a:focus {
 }
 
 caption {
-  display: table-caption;
-  text-align: center;
+    display: table-caption;
+    text-align: center;
     caption-side: top;
     color: white;
 }
+
 .avatar {
     width: 2rem;
     height: 2rem;
@@ -187,4 +188,19 @@ caption {
     margin: 10px;
     padding: 15px;
     height: auto;
+}
+
+.page-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    margin: 1.5rem 0 1.5rem;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.pull-r {
+    margin-left: auto;
+    margin-right: 0;
 }

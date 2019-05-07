@@ -74,7 +74,7 @@ var Datatable = function () {
                         'ajaxRequestGeneralError': 'İşlem gerçekleştirilemedi, tekrar deneyin',
                         // data tables spesific
                         'lengthMenu': '_MENU_ Rows',
-                        'info': 'Toplam _TOTAL_ kayıt',
+                        'info': 'Total _TOTAL_ records',
                         'infoEmpty': '&nbsp; No records to display',
                         'emptyTable': '<div class="text-center text-danger">No records in the table</div>',
                         'zeroRecords': '<div class="text-center text-danger">No Records founded</div>',

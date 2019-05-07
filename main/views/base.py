@@ -8,6 +8,7 @@ from main.models import USession, Todo
 from django.contrib.auth import authenticate, login as sys_login, logout as sys_logout, user_login_failed
 
 from utils.datatable import DataTable
+from utils.helper import Helper
 
 
 @login_required
@@ -23,13 +24,17 @@ def dashboard(request):
             length = start + int(request.GET.get('length', 10))
             order = DataTable.datatable_order([
                 'text',
+                'user__username',
+                'is_completed',
+                'created_time',
+                'last_updated',
             ], (int(request.GET.get('order[0][column]', 2)) - 2), request.GET.get('order[0][dir]', 'desc'))
 
             items = Todo.objects.all()
-            print(len(items))
             total = items.count()
             items = DataTable.filtering(request, items, [
                 {'text': 'icontains'},
+                {'user__username': 'icontains'},
             ])
 
             filtered = items.count()
@@ -40,6 +45,10 @@ def dashboard(request):
                 rows.append({
                     'id': item.id,
                     'text': item.text,
+                    'user__username': item.user.username,
+                    'is_completed': 'Completed' if item.is_completed else 'Not Completed',
+                    'created_time': str(item.created_time),
+                    'last_updated':str(item.last_updated),
                     'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
                 })
             data = DataTable.result_list(True, start, total, filtered, rows)
@@ -52,6 +61,21 @@ def dashboard(request):
                     'id': 'text',
                     'title': 'Todo Text',
                     'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                },
+                {
+                    'id': 'user__username',
+                    'title': 'User',
+                    'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                }, {
+                    'id': 'is_completed',
+                    'title': 'Status',
+                    'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                }, {
+                    'id': 'created_time',
+                    'title': 'Created',
+                }, {
+                    'id': 'last_updated',
+                    'title': 'Updated',
                 },
             ], url=''),
             'actions': [],
@@ -80,6 +104,7 @@ def login(request):
             user_session.email = user.email
             user_session.first_name = user.first_name
             user_session.last_name = user.last_name
+            user_session.is_superuser = user.is_superuser
             user_session.full_name = user.get_full_name()
             request.session['my'] = model_to_dict(user_session)
             return redirect('dashboard')

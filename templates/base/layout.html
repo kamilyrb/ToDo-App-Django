@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{% static 'plugins/bootstrap/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/custom.css' %}">
         <link rel="stylesheet" href="{% static 'css/vendors.bundle.min.css' %}">
-{#        <link rel="stylesheet" href="{% static 'css/style.bundle.min.css' %}">#}
+        {#        <link rel="stylesheet" href="{% static 'css/style.bundle.min.css' %}">#}
         <link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
 
     {% endblock %}
@@ -16,6 +16,25 @@
 {% include 'base/messages.html' %}
 {% include "base/header.html" %}
 <div class="mr-t-10"></div>
+<div class="page-header">
+    {% block title %}{% endblock %}
+    {% if actions %}
+        <div class="page-toolbar pull-r">
+            <div class="btn-group">{% for action in actions %}
+                <a{% if action.id %} id="{{ action.id }}"{% endif %}
+                                     class="btn btn-fit-height mr-2 {{ action.class }}"
+                                     title="{{ action.title|default_if_none:'' }}"
+                                     href="{{ action.url|default:'javascript:;' }}"
+                        {% if 'onclick' in action %}
+                                     onclick="{{ action.onclick }}"{% endif %}>
+                    <i class="{{ action.icon|default:'icon-file-plus' }}"></i>
+                    <span>{{ action.label|safe }}</span>
+                </a>{% endfor %}
+            </div>
+        </div>{% endif %}{% block actions %}{% endblock %}
+</div>
+
+
 {% block content %}
 
 {% endblock %}
@@ -23,10 +42,10 @@
 
 
 {% block plugin %}
-        <script type="text/javascript" src="{% static "plugins/jquery/jquery.min.js" %}"></script>
-{#    <script type="text/javascript" src="{% static "js/vendors.bundle.js" %}"></script>#}
+    <script type="text/javascript" src="{% static "plugins/jquery/jquery.min.js" %}"></script>
+    {#    <script type="text/javascript" src="{% static "js/vendors.bundle.js" %}"></script>#}
     <script type="text/javascript" src="{% static "plugins/bootstrap/popper.min.js" %}"></script>
-{#    <script type="text/javascript" src="{% static "plugins/sweetalert/sweetalert.js" %}"></script>#}
+    {#    <script type="text/javascript" src="{% static "plugins/sweetalert/sweetalert.js" %}"></script>#}
     <script type="text/javascript" src="{% static "plugins/bootstrap/bootstrap.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/app.js" %}"></script>
 {% endblock %}
