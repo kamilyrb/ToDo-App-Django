@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="form-group col-md-12">
+        <label>User<span class="text-danger"> *</span></label>
+        <select name="user" class="form-control">
+            {% for u in users %}
+                <option value="{{ u.id }}">{{ u.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Todo Text<span class="text-danger"> *</span></label>
+            <input type="text" name="text" maxlength="255" required
+                   class="form-control" value="{{ form.text|default_if_none:'' }}">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>State</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck" name="is_completed">
+                <label class="form-check-label" for="gridCheck">
+                    Completed
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+

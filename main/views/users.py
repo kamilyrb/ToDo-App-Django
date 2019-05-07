@@ -1,9 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import get_password_validators
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 
+from main.forms.form import UserForm
+from todoapp.settings import AUTH_PASSWORD_VALIDATORS
 from utils.datatable import DataTable
+from utils.helper import Helper
 
 
 @login_required
@@ -58,12 +64,85 @@ def user_list(request):
                 },
             ], url=''),
             'actions': [{
-                'label': 'Yeni Kayıt',
+                'label': 'New Record',
                 'class': 'btn btn-primary',
                 'icon': 'icon-plus',
+                'onclick': "App.dialogForm('New User', '" + reverse('user_form', args=[0]) + "',{'large':true})"
             }],
 
         })
     except Exception as ex:
         print(ex)
         pass
+
+
+@login_required
+def user_form(request, id=None):
+    try:
+        item = User.objects.get(pk=id) if id else User()
+        if request.is_ajax() and request.method == 'POST':
+            result = Helper.message_success()
+
+            form = UserForm(request.POST or None, instance=item)
+
+            if form.is_valid():
+                m: User = form.save(commit=False)
+                pass_change = False
+
+                if 'password' in form.data and len(form.data['password']) > 0:
+                    errors = []
+                    for validator in get_password_validators(AUTH_PASSWORD_VALIDATORS):
+                        try:
+                            validator.validate(form.data['password'], None)
+                        except ValidationError as error:
+                            errors.append(error)
+
+                    # check for digit
+                    if not any(char.isdigit() for char in form.data['password']):
+                        errors.append(ValidationError('Şifre en az bir tane rakam içermelidir'))
+
+                    # check for letter
+                    if not any(char.isalpha() for char in form.data['password']):
+                        errors.append(ValidationError('Şifre en az bir tane harf içermelidir'))
+
+                    if errors:
+                        result['message'] = '<br>'.join([x.messages[0] for x in errors])
+                        return JsonResponse(result)
+                    else:
+                        pass_change = True
+                if id:
+                    users = User.objects.filter(username=form.cleaned_data['username']).exclude(id=id)
+                    if len(users) > 0:
+                        result['message'] = 'Bu kullanıcı adına ait bir kayıt zaten mevcut!'
+                        return JsonResponse(result)
+
+                    users = User.objects.filter(email=form.cleaned_data['email']).exclude(id=id)
+                    if len(users) > 0:
+                        result['message'] = 'Bu mail adresine ait bir kayıt zaten mevcut!'
+                        return JsonResponse(result)
+
+                else:
+                    users = User.objects.filter(username=form.cleaned_data['username']).exclude(id=id)
+                    if len(users) > 0:
+                        result['message'] = 'Bu kullanıcı adına ait bir kayıt zaten mevcut!'
+                        return JsonResponse(result)
+
+                    users = User.objects.filter(email=form.cleaned_data['email']).exclude(id=id)
+                    if len(users) > 0:
+                        result['message'] = 'Bu mail adresine ait bir kayıt zaten mevcut!'
+                        return JsonResponse(result)
+                if pass_change:
+                    m.set_password(form.data['password'])
+                m.save()
+                result = Helper.message_success()
+            else:
+                error = Helper.get_model_errors(form)
+                result['message'] = error[0]['label'] + ': ' + error[0]['message']
+            return JsonResponse(result)
+
+        context = {
+            'form': item,
+        }
+        return render(request, 'pages/user/form.html', context)
+    except Exception as ex:
+        print(ex)

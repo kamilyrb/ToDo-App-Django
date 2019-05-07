@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
-from main.forms.form import LoginForm
+from main.forms.form import LoginForm, TodoForm
 from main.models import USession, Todo
 from django.contrib.auth import authenticate, login as sys_login, logout as sys_logout, user_login_failed
 
@@ -78,7 +80,12 @@ def dashboard(request):
                     'title': 'Updated',
                 },
             ], url=''),
-            'actions': [],
+            'actions': [{
+                'label': 'New Record',
+                'class': 'btn btn-primary',
+                'icon': 'icon-plus',
+                'onclick': "App.dialogForm('New Todo', '" + reverse('todo_form', args=(0,)) + "')"
+            }],
 
         })
     except Exception as ex:
@@ -120,5 +127,33 @@ def logout(request):
         sys_logout(request)
         request.session.flush()
         return redirect('/')
+    except Exception as ex:
+        print(ex)
+
+
+@login_required
+def todo_form(request, id=None):
+    try:
+        item = Todo.objects.get(pk=id) if id else Todo()
+        if request.is_ajax() and request.method == 'POST':
+            result = Helper.message_success()
+
+            form = TodoForm(request.POST or None, instance=item)
+
+            if form.is_valid():
+                m: Todo = form.save(commit=False)
+                # m.last_updated = Helper.get_now()
+                m.save()
+                result = Helper.message_success()
+            else:
+                error = Helper.get_model_errors(form)
+                result['message'] = error[0]['label'] + ': ' + error[0]['message']
+            return JsonResponse(result)
+
+        context = {
+            'form': item,
+            'users':User.objects.all().values('id','username')
+        }
+        return render(request, 'pages/todo/form.html', context)
     except Exception as ex:
         print(ex)

@@ -45,6 +45,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'todoapp.middleware.AuthController',
+
 ]
 
 ROOT_URLCONF = 'todoapp.urls'

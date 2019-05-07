@@ -2,6 +2,9 @@
 # from captcha.fields import CaptchaField
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+
+from main.models import Todo
 
 
 class LoginForm(forms.Form):
@@ -17,3 +20,15 @@ class LoginForm(forms.Form):
     #         if not user:
     #             raise forms.ValidationError('Kullanıcı adı veya şifreyi hatalı girdiniz!')
     #     return super(LoginForm,self).clean()
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        exclude = ['date_joined','is_active']
+
+
+class TodoForm(forms.ModelForm):
+    class Meta:
+        model = Todo
+        exclude = ['created_time','last_updated']
