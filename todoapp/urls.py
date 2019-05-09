@@ -26,9 +26,14 @@ urlpatterns = [
     path('todo/form/', base.todo_form, name='todo_form'),
     path('todo/form/<int:id>/', base.todo_form, name='todo_form'),
     path('todo/export/', base.export_todo_list, name='export_todo_list'),
+    path('todo/import/', base.import_todo_list, name='import_todo_list'),
 
     # user
     path('user/list/', users.user_list, name='user_list'),
     path('user/form/', users.user_form, name='user_form'),
     path('user/form/<int:id>/', users.user_form, name='user_form'),
+
+    # profile
+    path('profile/', base.profile, name='profile'),
+
 ]
