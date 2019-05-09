@@ -1,7 +1,9 @@
+import csv
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms import model_to_dict
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -49,8 +51,8 @@ def dashboard(request):
                     'text': item.text,
                     'user__username': item.user.username,
                     'is_completed': 'Completed' if item.is_completed else 'Not Completed',
-                    'created_time': str(item.created_time),
-                    'last_updated':str(item.last_updated),
+                    'created_time': Helper.format_date_to_str(item.created_time),
+                    'last_updated': Helper.format_date_to_str(item.last_updated),
                     'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
                 })
             data = DataTable.result_list(True, start, total, filtered, rows)
@@ -81,6 +83,17 @@ def dashboard(request):
                 },
             ], url=''),
             'actions': [{
+                'label': 'Export',
+                'class': 'btn btn-success',
+                'icon': 'icon-plus',
+                'target':'_blank',
+                'url':reverse('export_todo_list')
+            }, {
+                'label': 'Import',
+                'class': 'btn btn-info',
+                'icon': 'icon-plus',
+                'onclick': "App.dialogForm('New Todo', '" + reverse('todo_form', args=(0,)) + "')"
+            }, {
                 'label': 'New Record',
                 'class': 'btn btn-primary',
                 'icon': 'icon-plus',
@@ -152,8 +165,30 @@ def todo_form(request, id=None):
 
         context = {
             'form': item,
-            'users':User.objects.all().values('id','username')
+            'users': User.objects.all().values('id', 'username')
         }
         return render(request, 'pages/todo/form.html', context)
+    except Exception as ex:
+        print(ex)
+
+
+@login_required
+def export_todo_list(request):
+    try:
+        file_name = 'todo_list.csv'
+        todos = Todo.objects.all()
+        response = HttpResponse(content_type='text/csv')
+        response.write('\ufeff')
+
+        data = csv.writer(response, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
+        data.writerow(['User', 'Todo', 'Status', 'Created', 'Updated'])
+        for t in todos:
+            data.writerow([t.user.username, t.text, 'Completed' if t.is_completed else 'Not Completed',
+                           Helper.format_date_to_str(t.created_time), Helper.format_date_to_str(t.last_updated)])
+
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+        response['Content-Type'] = 'text/csv'
+        return response
+
     except Exception as ex:
         print(ex)

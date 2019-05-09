@@ -26,6 +26,7 @@ def user_list(request):
             order = DataTable.datatable_order([
                 'first_name',
                 'last_name',
+                'last_login',
             ], (int(request.GET.get('order[0][column]', 2)) - 2), request.GET.get('order[0][dir]', 'desc'))
 
             items = User.objects.all()
@@ -44,6 +45,7 @@ def user_list(request):
                     'id': item.id,
                     'first_name': item.first_name,
                     'last_name': item.last_name,
+                    'last_login':Helper.format_date_to_str(item.last_login) if item.last_login else '',
                     'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
                 })
             data = DataTable.result_list(True, start, total, filtered, rows)
@@ -61,6 +63,9 @@ def user_list(request):
                     'id': 'last_name',
                     'title': 'Last Name',
                     'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                }, {
+                    'id': 'last_login',
+                    'title': 'Last Login',
                 },
             ], url=''),
             'actions': [{

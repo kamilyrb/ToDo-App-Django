@@ -23,8 +23,9 @@ urlpatterns = [
     path('', base.dashboard, name='dashboard'),
     path('login/', base.login, name='login'),
     path('logout/', base.logout, name='logout'),
-    path('trip/form/', base.todo_form, name='todo_form'),
-    path('trip/form/<int:id>/', base.todo_form, name='todo_form'),
+    path('todo/form/', base.todo_form, name='todo_form'),
+    path('todo/form/<int:id>/', base.todo_form, name='todo_form'),
+    path('todo/export/', base.export_todo_list, name='export_todo_list'),
 
     # user
     path('user/list/', users.user_list, name='user_list'),

@@ -119,3 +119,5 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/assets/'
 LOGIN_URL = '/login'
+SHORT_DATE_FORMAT = 'd.m.Y'
+DATE_TIME_FORMAT = '%m-%d-%Y %H:%M:%S'
