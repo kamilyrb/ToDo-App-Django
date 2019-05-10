@@ -1,0 +1,57 @@
+{% extends 'base/layout.html' %}{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-6">
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="chart-container">
+                <canvas id="bar-chart" width="800" height="450"></canvas>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script-raw %}
+    <script type="text/javascript" src="{% static 'plugins/chart/chart.js' %}"></script>
+    <script>
+        //pie
+        var ctxP = document.getElementById("pieChart").getContext('2d');
+        var myPieChart = new Chart(ctxP, {
+            type: 'pie',
+            data: {
+                labels: ["Completed", "Not Completed",],
+                datasets: [{
+                    data: [{{ cmp_count }}, {{ not_cmp_count }}],
+                    backgroundColor: ["#F7464A", "#46BFBD"],
+                    hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        new Chart(document.getElementById("bar-chart"), {
+            type: 'bar',
+            data: {
+                labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                datasets: [
+                    {
+                        label: "Population (millions)",
+                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                        data: [2478, 5267, 734, 784, 433]
+                    }
+                ]
+            },
+            options: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050'
+                }
+            }
+        });
+    </script>
+{% endblock %}

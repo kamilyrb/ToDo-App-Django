@@ -16,7 +16,7 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 
-from main.views import base, users
+from main.views import base, users, statistic
 
 urlpatterns = [
     # base
@@ -37,5 +37,8 @@ urlpatterns = [
 
     # profile
     path('profile/', base.profile, name='profile'),
+
+    # statistic
+    path('statistic/', statistic.statistic, name='statistic'),
 
 ]
