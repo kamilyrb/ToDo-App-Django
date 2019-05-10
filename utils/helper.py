@@ -133,3 +133,12 @@ class Helper:
         if not ext.lower() in valid_extensions:
             raise ValidationError(u'Unsupported file extension.')
 
+    @staticmethod
+    def column_index(cname, cols):
+        index = 0
+        for col in cols:
+            if col == cname:
+                return index
+            index += 1
+        return -1
+

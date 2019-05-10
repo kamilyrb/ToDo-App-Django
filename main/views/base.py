@@ -1,4 +1,6 @@
+import codecs
 import csv
+import io
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -88,8 +90,8 @@ def dashboard(request):
                 'label': 'Export',
                 'class': 'btn btn-success',
                 'icon': 'icon-plus',
-                'target':'_blank',
-                'url':reverse('export_todo_list')
+                'target': '_blank',
+                'url': reverse('export_todo_list')
             }, {
                 'label': 'Import',
                 'class': 'btn btn-info',
@@ -196,29 +198,45 @@ def export_todo_list(request):
         print(ex)
 
 
-
-
 @login_required
 def import_todo_list(request):
     if request.method == 'POST':
         result = Helper.message()
         try:
-            file = request.FILES.get('csv_file',None)
+            file = request.FILES.get('csv_file', None)
             try:
-                Helper.validate_file_extension(file,'.csv')
+                Helper.validate_file_extension(file, '.csv')
             except ValidationError:
                 result['message'] = 'File type is not valid.Please select a csv file.'
+
+            decoded_file = file.read().decode('ISO-8859-1').replace('ï»¿', '').splitlines()
+            file_content = list(csv.reader(decoded_file, delimiter=';', quotechar='"'))
+            header = file_content.pop(0)
+            todo_index = Helper.column_index('Todo', header)
+            status_index = Helper.column_index('Status', header)
+            authenticated_user_id = Helper.get_session(request).user_id
+            if todo_index is not -1 and status_index is not -1:
+                for r in file_content:
+                    try:
+                        Todo.objects.create(user_id=authenticated_user_id, text=r[todo_index].strip(),
+                                            is_completed=False if 'Not Completed' in r[status_index] else True)
+                    except Exception as ex:
+                        print(ex)
+                result = Helper.message_success(text='Records are created.')
+            else:
+                result['message'] = 'File format is not valid.'
+
         except Exception as ex:
             print(ex)
             result['message'] = str(ex)
         return JsonResponse(result)
 
-    return render(request,'pages/todo/import_form.html',{})
+    return render(request, 'pages/todo/import_form.html', {})
 
 
 @login_required
 def profile(request):
     try:
-        return render(request,'pages/profile.html',{'form':User.objects.get(pk=Helper.get_session(request).user_id)})
+        return render(request, 'pages/profile.html', {'form': User.objects.get(pk=Helper.get_session(request).user_id)})
     except Exception as ex:
         print(ex)
