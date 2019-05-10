@@ -27,6 +27,8 @@ urlpatterns = [
     path('todo/form/<int:id>/', base.todo_form, name='todo_form'),
     path('todo/export/', base.export_todo_list, name='export_todo_list'),
     path('todo/import/', base.import_todo_list, name='import_todo_list'),
+    path('todo/complete/<int:id>/', base.complete_todo, name='complete_todo'),
+    path('todo/delete/<int:id>/', base.delete_todo, name='delete_todo'),
 
     # user
     path('user/list/', users.user_list, name='user_list'),

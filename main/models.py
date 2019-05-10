@@ -40,5 +40,5 @@ class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('User'))
     text = models.CharField(max_length=255, verbose_name=_('Todo Text'))
     is_completed = models.BooleanField(default=False, verbose_name=_('Is Completed'))
-    created_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name=_('Created Time'))
-    last_updated = models.DateTimeField(default=datetime.datetime.now(), verbose_name=_('Last Updated'))
+    created_time = models.DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))
+    last_updated = models.DateTimeField(auto_now_add=True, verbose_name=_('Last Updated'))

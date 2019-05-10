@@ -65,7 +65,7 @@
                     var confirmButton = $('a[data-event="confirm"]');
                     $(confirmButton).click(function (e) {
                         e.preventDefault();
-                        var url =$(this).attr('data-confirmurl');
+                        var url = $(this).attr('data-confirmurl');
                         App.confirm(($(this).attr('data-message')), function () {
                             window.setTimeout(function () {
                                 $.ajax({

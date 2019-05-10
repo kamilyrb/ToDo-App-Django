@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 
 from main.forms.form import LoginForm, TodoForm
@@ -24,9 +24,28 @@ def dashboard(request):
     try:
         if request.is_ajax():
             data = DataTable.result_list()
-            action_list = []
-
-            actions = DataTable.datatable_actions(action_list)
+            delete_action_list = [{
+                'title': 'Delete',
+                'icon': 'fa fa-times color-danger',
+                'message': 'Do you want to delete this todo?',
+                'event': 'confirm',
+                'confirmurl': reverse('delete_todo', args=[0]),
+            }]
+            comp_and_del_action_list = [{
+                'title': 'Complete Todo',
+                'icon': 'fa fa-check color-success',
+                'message': 'Do you want to complete this todo?',
+                'event': 'confirm',
+                'confirmurl': reverse('complete_todo', args=[0]),
+            }, {
+                'title': 'Delete',
+                'icon': 'fa fa-times color-danger',
+                'message': 'Do you want to delete this todo?',
+                'event': 'confirm',
+                'confirmurl': reverse('delete_todo', args=[0]),
+            }]
+            delete_action = DataTable.datatable_actions(delete_action_list)
+            comp_and_del_action = DataTable.datatable_actions(comp_and_del_action_list)
 
             start = int(request.GET.get('start', 0))
             length = start + int(request.GET.get('length', 10))
@@ -50,6 +69,7 @@ def dashboard(request):
 
             rows = []
             for item in items:
+                actions = delete_action if item.is_completed else comp_and_del_action
                 rows.append({
                     'id': item.id,
                     'text': item.text,
@@ -57,7 +77,7 @@ def dashboard(request):
                     'is_completed': 'Completed' if item.is_completed else 'Not Completed',
                     'created_time': Helper.format_date_to_str(item.created_time),
                     'last_updated': Helper.format_date_to_str(item.last_updated),
-                    'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
+                    'actions': actions.replace('/0', '/' + str(item.id))
                 })
             data = DataTable.result_list(True, start, total, filtered, rows)
 
@@ -240,3 +260,36 @@ def profile(request):
         return render(request, 'pages/profile.html', {'form': User.objects.get(pk=Helper.get_session(request).user_id)})
     except Exception as ex:
         print(ex)
+
+
+@login_required
+def complete_todo(request, id):
+    result = Helper.message()
+    try:
+        todo = get_object_or_404(Todo, pk=id)
+        if todo.user_id == Helper.get_session(request).id:
+            todo.is_completed = True
+            todo.save()
+            result = Helper.message_success(text='Todo is updated as completed')
+        else:
+            result['message'] = 'Not Allowed.'
+    except Exception as ex:
+        print(ex)
+        result['message'] = str(ex)
+    return JsonResponse(result)
+
+
+@login_required
+def delete_todo(request, id):
+    result = Helper.message()
+    try:
+        todo = get_object_or_404(Todo, pk=id)
+        if todo.user_id == Helper.get_session(request).id:
+            todo.delete()
+            result = Helper.message_success(text='Todo is deleted')
+        else:
+            result['message'] = 'Not Allowed.'
+    except Exception as ex:
+        print(ex)
+        result['message'] = str(ex)
+    return JsonResponse(result)

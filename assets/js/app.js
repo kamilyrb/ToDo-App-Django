@@ -313,7 +313,7 @@ var App = function () {
         scrollTop: function () {
             App.scrollTo();
         },
-        alert: function (message, icon, title = "Hata") {
+        alert: function (message, icon, title = "Error") {
             icon = icon || 'error';
             if ($.inArray(icon, ['success', 'warning', 'error', 'info']) < 0) {
                 type = 'info'
@@ -324,21 +324,20 @@ var App = function () {
                 html: message,
                 type: icon,
                 reverseButtons: !0,
-                confirmButtonText: 'Tamam',
+                confirmButtonText: 'Ok',
             });
         },
         confirm: function (message, confirm, decline, icon) {
-            var ic = icon || 'warning';
             swal({
-                title: 'Dikkat',
+                title: 'Attention',
                 text: message,
-                type: ic,
                 reverseButtons: !0,
-                showCancelButton: !0,
-                confirmButtonText: 'Evet',
-                cancelButtonText: 'Hayır',
+                buttons: [
+                    'No',
+                    'Yes'
+                ],
             }).then(function (e) {
-                if (e.value && confirm) {
+                if (e != null && confirm) {
                     confirm();
                 } else if (decline) {
                     decline();
@@ -350,7 +349,7 @@ var App = function () {
             if ($.inArray(type, ['success', 'warning', 'error', 'info']) < 0) {
                 type = 'info';
             }
-            toastr[type](message, (title || 'İşlem Sonucu'));
+            toastr[type](message, (title || 'Process Result'));
         },
         alertBox: function (options) {
             options = $.extend(true, {
