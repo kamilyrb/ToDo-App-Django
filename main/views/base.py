@@ -62,6 +62,7 @@ def dashboard(request):
             items = DataTable.filtering(request, items, [
                 {'text': 'icontains'},
                 {'user__username': 'icontains'},
+                'is_completed'
             ])
 
             filtered = items.count()
@@ -97,7 +98,8 @@ def dashboard(request):
                 }, {
                     'id': 'is_completed',
                     'title': 'Status',
-                    'filter': '<input type="text" class="form-control form-control-sm form-filter m-input">'
+                    'filter': '<select class="form-control form-control-sm form-filter m-input">' + DataTable.datatable_filter_options(
+                        [('true', 'Completed'), ('false', 'Not Completed')]) + '</select>'
                 }, {
                     'id': 'created_time',
                     'title': 'Created',
@@ -269,6 +271,7 @@ def complete_todo(request, id):
         todo = get_object_or_404(Todo, pk=id)
         if todo.user_id == Helper.get_session(request).id:
             todo.is_completed = True
+            todo.last_updated = Helper.get_now()
             todo.save()
             result = Helper.message_success(text='Todo is updated as completed')
         else:

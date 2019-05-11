@@ -101,7 +101,7 @@ class DataTable:
                                  selected_value: Union[str, None] = None) -> str:
         result = []
         if add_empty:
-            result.append('<option value="">-- Seçiniz --</option>')
+            result.append('<option value="">-- Select --</option>')
 
         try:
             if isinstance(options, list):
