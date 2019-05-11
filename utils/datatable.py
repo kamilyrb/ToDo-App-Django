@@ -1,4 +1,3 @@
-from contextlib import suppress
 from typing import Union, Any
 
 from django.db.models import QuerySet

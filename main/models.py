@@ -1,11 +1,7 @@
-import datetime
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-
-# Create your models here.
 
 class USession(models.Model):
     id = models.IntegerField()
@@ -29,6 +25,7 @@ class USession(models.Model):
         verbose_name='User ID'
     )
     is_superuser = models.BooleanField(blank=True, default=True, help_text=_('User Is Admin'))
+
     def __str__(self):
         return self.full_name
 

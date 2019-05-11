@@ -17,6 +17,7 @@ notifications = {
 def defaults(request):
     return {
         'is_admin': Helper.is_admin(request),
+        'user': Helper.get_session(request),
     }
 
 

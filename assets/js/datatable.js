@@ -68,10 +68,10 @@ var Datatable = function () {
                     },
                     'pageLength': 10, // default records per page
                     'language': { // language settings
-                        'processing': 'Yükleniyor...',
+                        'processing': 'Loading...',
                         // app spesific
-                        'groupActions': '_TOTAL_ kayıt seçili:  ',
-                        'ajaxRequestGeneralError': 'İşlem gerçekleştirilemedi, tekrar deneyin',
+                        'groupActions': '_TOTAL_ records selected:  ',
+                        'ajaxRequestGeneralError': 'Process couldn\'t done, please retry',
                         // data tables spesific
                         'lengthMenu': '_MENU_ Rows',
                         'info': 'Total _TOTAL_ records',
@@ -82,7 +82,7 @@ var Datatable = function () {
                             'page': '',
                             'pageOf': ' - Pages: '
                         },
-                        'sInfoFiltered': ' - _MAX_ kayıttan süzüldü'
+                        'sInfoFiltered': ' (filtered from _MAX_ records) '
                     },
                     'responsive': {
                         'details': {

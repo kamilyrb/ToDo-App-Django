@@ -33,35 +33,6 @@
                     }
                 },
                 onDataLoad: function (grid) {
-                    var button = $('a[href="#delete"]');
-                    $(button).click(function (e) {
-                        e.preventDefault();
-                        var id = parseFloat($(this).attr('data-id')),
-                            url = window.location.origin + window.location.pathname + "delete/" + id;
-                        console.log(url);
-                        var message = 'Kayıt tamamen silinecektir!';
-                        if (typeof $(button).data('message') !== 'undefined') {
-                            message = $(button).data("message");
-                        }
-                        App.confirm(message, function () {
-                            window.setTimeout(function () {
-                                $.ajax({
-                                    'type': 'delete',
-                                    'url': url
-                                }).done(function (result) {
-                                    if (result.success) {
-                                        App.notify(result.message);
-                                        App.reloadDataTables();
-                                    } else {
-                                        App.alert(result.message);
-                                    }
-                                }).fail(function (jqXHR, textStatus) {
-                                    App.alert('Sunucu hatası oluştu, sayfayı yenileyin!');
-                                });
-                            }, 500);
-                        });
-                    });
-                    {#    for confirm dialog#}
                     var confirmButton = $('a[data-event="confirm"]');
                     $(confirmButton).click(function (e) {
                         e.preventDefault();
@@ -79,7 +50,7 @@
                                         App.alert(result.message);
                                     }
                                 }).fail(function (jqXHR, textStatus) {
-                                    App.alert('Sunucu hatası oluştu, sayfayı yenileyin!');
+                                    App.alert('Server error occured, please refresh the page!');
                                 });
                             }, 500);
                         });

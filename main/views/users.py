@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import get_password_validators
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 
 from main.forms.form import UserForm
@@ -45,7 +45,7 @@ def user_list(request):
                     'id': item.id,
                     'first_name': item.first_name,
                     'last_name': item.last_name,
-                    'last_login':Helper.format_date_to_str(item.last_login) if item.last_login else '',
+                    'last_login': Helper.format_date_to_str(item.last_login) if item.last_login else '',
                     'actions': actions.replace('/0', '/' + str(item.id)).replace('{id}', str(item.id))
                 })
             data = DataTable.result_list(True, start, total, filtered, rows)

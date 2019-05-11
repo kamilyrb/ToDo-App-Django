@@ -420,15 +420,10 @@ var App = function () {
                             }
                         }).fail(function (jqXHR, textStatus) {
                             // mApp.unblock($this);
-                            App.alert('Sunucu hatası oluştu, sayfayı yenileyin!');
+                            App.alert('Server error generated.Please refresh page!');
                         });
                     })
                 );
-                // App.validator(modal.find('.modal-content').find('form'));
-                // $('.modal-dialog').draggable({
-                //     handle: ".modal-header"
-                // });
-                // mApp.unblock($('body'));
             });
         },
         reloadDataTables: function () {

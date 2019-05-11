@@ -1,11 +1,7 @@
-import codecs
 import csv
-import io
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
@@ -13,7 +9,7 @@ from django.urls import reverse
 
 from main.forms.form import LoginForm, TodoForm
 from main.models import USession, Todo
-from django.contrib.auth import authenticate, login as sys_login, logout as sys_logout, user_login_failed
+from django.contrib.auth import authenticate, login as sys_login, logout as sys_logout
 
 from utils.datatable import DataTable
 from utils.helper import Helper
@@ -155,7 +151,7 @@ def login(request):
             request.session['my'] = model_to_dict(user_session)
             return redirect('dashboard')
         else:
-            messages = ['Kullanıcı adı veya parola hatalı']
+            messages = ['Invalid password or username.']
 
     return render(request, "pages/login.html", {"form": form, 'messages': messages})
 

@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from main.models import Todo
 
+
 @login_required
 def statistic(request):
     try:

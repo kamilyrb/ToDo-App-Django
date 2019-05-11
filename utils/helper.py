@@ -15,7 +15,7 @@ class Helper:
         self.name = name
 
     @staticmethod
-    def format_date_to_str(dtime: datetime, date_format :str = DATE_TIME_FORMAT):
+    def format_date_to_str(dtime: datetime, date_format: str = DATE_TIME_FORMAT):
         try:
             return dtime.strftime(date_format)
         except Exception as ex:
@@ -52,7 +52,7 @@ class Helper:
         return session.is_superuser
 
     @staticmethod
-    def message(text: str = 'İşlem yapılmadı!', success: bool = False, extra_data: dict = ()) -> dict:
+    def message(text: str = 'Process not done!', success: bool = False, extra_data: dict = ()) -> dict:
         result = {
             'success': success,
             'message': text
@@ -100,11 +100,10 @@ class Helper:
             result.append({
                 'field_list': '',
                 'label': '',
-                'message': 'Nedeni belirlenemeyen bir hata oluştu!',
+                'message': 'An unknown error occured!',
                 'description': ''
             })
         return result
-
 
     @staticmethod
     def get_now():
@@ -141,4 +140,3 @@ class Helper:
                 return index
             index += 1
         return -1
-
