@@ -277,7 +277,6 @@ def complete_todo(request, id):
         else:
             result['message'] = 'Not Allowed.'
     except Exception as ex:
-        print(ex)
         result['message'] = str(ex)
     return JsonResponse(result)
 
@@ -293,6 +292,5 @@ def delete_todo(request, id):
         else:
             result['message'] = 'Not Allowed.'
     except Exception as ex:
-        print(ex)
         result['message'] = str(ex)
     return JsonResponse(result)
