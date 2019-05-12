@@ -16,11 +16,18 @@ Start project on local server
 
     $ python manage.py runsever 8009
 
+## Other commands
+Run test
+
+    $ python manage.py test
+Reset database
+
+    $ python manage.py resetdb
+
 ## ScreenShots
 
 ![Alt text](assets/screenshots/dashboard.png?raw=true "Dashboard")
 
-![Alt text](assets/screenshots/import.png?raw=true "Import Todo")
 
 ![Alt text](assets/screenshots/statistics.png?raw=true "Statistics")
 
