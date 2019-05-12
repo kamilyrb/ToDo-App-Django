@@ -3,9 +3,9 @@ import os
 
 import sys
 
+from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
-from django.db import connection
 
 
 class Command(BaseCommand):
@@ -23,10 +23,17 @@ class Command(BaseCommand):
                     if '0' in f:
                         os.remove(migration_dir + "/" + f)
 
-            cursor = connection.cursor()
-
-            self.stdout.write('Dropping schema...')
-            cursor.execute("drop schema public cascade;create schema public;")
+            call_command('flush', interactive=False)
+            self.stdout.write('Removed db...')
+            user = User()
+            user.username = 'admin'
+            user.is_superuser = True
+            user.first_name = 'Super'
+            user.last_name = 'User'
+            user.is_active = True
+            user.set_password('123')
+            user.save()
+            self.stdout.write('Created super user ...')
 
             self.stdout.write('Applying migrations...')
             call_command('makemigrations')

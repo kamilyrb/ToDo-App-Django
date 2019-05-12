@@ -345,20 +345,20 @@ var App = function () {
         dialogForm: function (title, url, options) {
             // mApp.block($('body'), {});
             var buttons = '';
-            var submitText = (options && options['submit-text']) ? options['submit-text'] : 'Kaydet';
+            var submitText = (options && options['submit-text']) ? options['submit-text'] : 'Save';
             if (options && options['hide-save-button']) {
                 buttons = $('<div/>').addClass('modal-footer').append(
                     $('<button/>', {
                         'type': 'button',
                         'data-dismiss': 'modal'
-                    }).addClass('btn btn-primary').text('Kapat')
+                    }).addClass('btn btn-primary').text('Close')
                 );
             } else {
                 buttons = $('<div/>').addClass('modal-footer').append(
                     $('<button/>', {
                         'type': 'button',
                         'data-dismiss': 'modal'
-                    }).addClass('btn btn-secondary').text('Kapat'),
+                    }).addClass('btn btn-secondary').text('Close'),
                     $('<button/>', {
                         'type': 'submit'
                     }).addClass('btn btn-primary').text(submitText)
@@ -386,10 +386,7 @@ var App = function () {
                             url = $this.attr('action'),
                             id = parseFloat($this.find('input[name="id"]').val()),
                             formData = new FormData(this);
-                        // if (!$this.valid()) {
-                        //     App.notify('Zorunlu alanları doldurunuz!!!', 'error');
-                        //     return;
-                        // }
+
                         if (id && url.substr(url.lastIndexOf('/') + 1) !== id.toString())
                             url = url + id.toString();
                         // mApp.block($this, {});

@@ -1,0 +1,9 @@
+version: '2'
+services:
+  web:
+    build: .
+    command: python3.6 manage.py runserver 0.0.0.0:8008
+    volumes:
+      - .:/code
+    ports:
+      - "8008:8008"

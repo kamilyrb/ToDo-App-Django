@@ -1,9 +1,7 @@
-import csv
 import datetime
 import re
 from typing import Any, Union
 
-from django.http import HttpResponse
 from django.utils import formats
 
 from main.models import USession
@@ -24,6 +22,12 @@ class Helper:
     @staticmethod
     def format_date(source: Any, date_format: str = SHORT_DATE_FORMAT) -> Union[
         str, datetime.datetime]:
+        '''
+        format datetime object to desired format
+        :param source: datetime source
+        :param date_format: desired format
+        :return:
+        '''
         formatted = None
         if isinstance(source, str):
             splitted = re.split(r'[/\-.\s]+', source)
@@ -44,15 +48,32 @@ class Helper:
 
     @staticmethod
     def get_session(request) -> USession:
+        '''
+        get abstract class object usession.When user login, usession object sets and stores on request.
+        :param request:
+        :return: USession object from request
+        '''
         return USession(**dict(request.session.get('my', {})))
 
     @staticmethod
     def is_admin(request) -> bool:
+        '''
+        check user is super_user.It is checking from usession object
+        :param request:
+        :return:
+        '''
         session = Helper.get_session(request)
         return session.is_superuser
 
     @staticmethod
     def message(text: str = 'Process not done!', success: bool = False, extra_data: dict = ()) -> dict:
+        '''
+        return dict for use at generally JsonResponse
+        :param text:
+        :param success:
+        :param extra_data:
+        :return:
+        '''
         result = {
             'success': success,
             'message': text
@@ -69,7 +90,12 @@ class Helper:
         return Helper.message(text, True, extra_data)
 
     @staticmethod
-    def get_model_errors(form):
+    def get_model_errors(form) -> list:
+        '''
+        find posted form error and return as list
+        :param form:
+        :return:
+        '''
         result = []
 
         for key in form.errors.keys():
@@ -106,25 +132,21 @@ class Helper:
         return result
 
     @staticmethod
-    def get_now():
+    def get_now() -> datetime:
+        '''
+        get current datetime
+        :return:
+        '''
         return datetime.datetime.now()
 
     @staticmethod
-    def export_to_excel(rows: list, file_name: str = 'Liste') -> HttpResponse:
-        response = HttpResponse(content_type='text/csv')
-        response.write('\ufeff')
-
-        data = csv.writer(response, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
-
-        for row in rows:
-            data.writerow(row)
-
-        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-        response['Content-Type'] = 'text/csv'
-        return response
-
-    @staticmethod
     def validate_file_extension(value, extension):
+        '''
+        Check file extension is equals to param extension
+        :param value: file from request
+        :param extension: file extension for compare
+        :return:
+        '''
         import os
         from django.core.exceptions import ValidationError
         ext = os.path.splitext(value.name)[1]
@@ -133,7 +155,13 @@ class Helper:
             raise ValidationError(u'Unsupported file extension.')
 
     @staticmethod
-    def column_index(cname, cols):
+    def column_index(cname, cols) -> int:
+        '''
+        Find column index from column headers list
+        :param cname: column name
+        :param cols: column header list
+        :return: int
+        '''
         index = 0
         for col in cols:
             if col == cname:
